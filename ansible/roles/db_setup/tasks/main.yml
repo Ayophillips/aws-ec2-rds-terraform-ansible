@@ -1,0 +1,10 @@
+# ansible/roles/database_setup/tasks/main.yml
+- name: Create database schema
+  postgresql_db:
+    name: "{{ db_name }}"
+    state: present
+
+- name: Create database tables
+  postgresql_query:
+    db: "{{ db_name }}"
+    path: "/path/to/schema.sql"

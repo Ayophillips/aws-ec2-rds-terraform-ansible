@@ -1,0 +1,19 @@
+- name: Deploy Web Application
+  hosts: web
+  become: true
+  roles:
+    - nginx
+    - app_deploy
+
+- name: Setup DB
+  hosts: database
+  become: true
+  roles:
+    - database_setup
+
+- name: Deploy Backend
+  hosts: backend
+  become: true
+  roles:
+    - nodejs
+    - app_deploy
