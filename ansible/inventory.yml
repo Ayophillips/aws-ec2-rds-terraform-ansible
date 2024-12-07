@@ -1,0 +1,18 @@
+all:
+  children:
+    web:
+      hosts:
+        public-instance:
+          ansible_host: <public_instance_ip>
+    backend:
+      hosts:
+        private-instance:
+          ansible_host: <private_instance_ip>
+    bastion:
+      hosts:
+        bastion-host:
+          ansible_host: <bastion_instance_ip>
+    database:
+      hosts:
+        rds-instance:
+          ansible_host: <rds_endpoint>

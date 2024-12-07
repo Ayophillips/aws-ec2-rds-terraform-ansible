@@ -1,0 +1,6 @@
+# ansible/roles/nodejs/handlers/main.yml
+---
+- name: restart nodejs
+  service:
+    name: nodejs
+    state: restarted
