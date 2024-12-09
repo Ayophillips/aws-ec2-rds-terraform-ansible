@@ -2,14 +2,14 @@
   hosts: web
   become: true
   roles:
-    - nginx
+    - nginx_setup
     - reacjs
 
 - name: Setup DB
   hosts: database
   become: true
   roles:
-    - database_setup
+    - db_setup
 
 - name: Deploy Backend
   hosts: backend
