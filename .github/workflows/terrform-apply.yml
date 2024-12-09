@@ -82,8 +82,8 @@ jobs:
             --vault-password-file .vault_pass \
             -e "db_password=$TF_VAR_DB_PASSWORD" \
             -e "db_host=$(terraform output -raw db_endpoint)" \
-            -e "db_user=admin" \
-            -e "db_name=mypostgresdb" \
+            -e "db_user=dbadmin" \
+            -e "db_name=appdb" \
             -e "db_port=5432"
 
       - name: Cleanup Sensitive Files
