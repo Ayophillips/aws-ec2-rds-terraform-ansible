@@ -38,6 +38,7 @@ jobs:
         run: |
           terraform init
           terraform output -json > tf_outputs.json
+          cat tf_outputs.json
 
       - name: Generate Inventory
         working-directory: ./terraform

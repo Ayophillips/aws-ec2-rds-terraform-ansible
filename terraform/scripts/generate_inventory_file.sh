@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get Terraform outputs
- INSTANCES=$(cat tf_outputs.json | jq -r '.instances.value')
+INSTANCES=$(cat tf_outputs.json | jq -r '.instances.value')
 
 WEB_IP=$(echo $INSTANCES | jq -r '.web')
 BACKEND_IP=$(echo $INSTANCES | jq -r '.backend')
@@ -22,3 +22,5 @@ $BASTION_IP
 [database]
 $DB_ENDPOINT
 EOF
+
+cat inventory.ini
