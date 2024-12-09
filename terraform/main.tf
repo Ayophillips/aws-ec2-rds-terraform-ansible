@@ -56,7 +56,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[0].id
+  subnet_id     = aws_subnet.public[*].id
 
   tags = {
     Name = "main-nat"
@@ -245,7 +245,7 @@ module "web" {
   instance_type      = "t2.micro"
   key_name           = "my-key-pair"
   security_group_ids = [aws_security_group.public.id]
-  subnet_id          = aws_subnet.public[0].id
+  subnet_id          = aws_subnet.public[*].id
 }
 
 module "backend" {
@@ -255,7 +255,7 @@ module "backend" {
   instance_type      = "t2.micro"
   key_name           = "my-key-pair"
   security_group_ids = [aws_security_group.private.id]
-  subnet_id          = aws_subnet.private[0].id
+  subnet_id          = aws_subnet.private[*].id
 }
 
 module "bastion" {
@@ -265,7 +265,7 @@ module "bastion" {
   instance_type      = "t2.micro"
   key_name           = "my-key-pair"
   security_group_ids = [aws_security_group.private.id]
-  subnet_id          = aws_subnet.public[1].id
+  subnet_id          = aws_subnet.public[*].id
 }
 
 # Application Load Balancer
@@ -274,7 +274,7 @@ resource "aws_lb" "app" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = aws_subnet.public[0].id
+  subnets            = aws_subnet.public[*].id
 }
 
 resource "aws_lb_target_group" "app" {
@@ -310,7 +310,7 @@ resource "aws_lb_target_group_attachment" "app" {
 # RDS Instance
 resource "aws_db_subnet_group" "main" {
   name       = "main-db-subnet-group"
-  subnet_ids = aws_subnet.private[1].id
+  subnet_ids = aws_subnet.private[*].id
 }
 
 resource "aws_db_instance" "main" {
