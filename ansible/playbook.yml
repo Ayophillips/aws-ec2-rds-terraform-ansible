@@ -14,11 +14,11 @@
 - name: Deploy Backend
   hosts: backend
   vars:
-    db_host: "your-db-host"
-    db_user: "your-db-user"
-    db_password: "{{ vault_db_password }}" # Use Ansible vault for sensitive data
-    db_name: "your-db-name"
-    db_port: "your-db-port"
+    db_host: "{{ db_host }}"
+    db_user: "{{ db_user }}"
+    db_password: "{{ db_password }}"
+    db_name: "{{ db_name }}"
+    db_port: "{{ db_port }}"
   become: true
   roles:
     - nodejs
