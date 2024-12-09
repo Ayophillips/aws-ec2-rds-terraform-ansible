@@ -31,12 +31,12 @@ jobs:
       - name: Generate Inventory
         working-directory: ./terraform
         run: |
-          if [ ! -f ./scripts/generate_inventory.sh ]; then
-            echo "Error: generate_inventory.sh not found"
+          if [ ! -f ./scripts/generate_inventory_file.sh ]; then
+            echo "Error: generate_inventory_file.sh not found"
             exit 1
           fi
-          chmod +x ./scripts/generate_inventory.sh
-          ./scripts/generate_inventory.sh || exit 1
+          chmod +x ./scripts/generate_inventory_file.sh
+          ./scripts/generate_inventory_file.sh || exit 1
 
       - name: Create Ansible Vault Password File
         working-directory: ./ansible
