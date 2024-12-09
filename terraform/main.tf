@@ -18,6 +18,10 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # Public Subnets
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
@@ -45,7 +49,9 @@ resource "aws_subnet" "private" {
 
 # NAT Gateway
 resource "aws_eip" "nat" {
-  domain = "vpc"
+  tags = {
+    Name = "nat-eip"
+  }
 }
 
 resource "aws_nat_gateway" "main" {
