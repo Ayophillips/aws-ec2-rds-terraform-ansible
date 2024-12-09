@@ -9,7 +9,7 @@ BASTION_IP=$(echo $INSTANCES | jq -r '.bastion')
 DB_ENDPOINT=$(echo $INSTANCES | jq -r '.database')
 
 # Generate inventory file from template
-cat > inventory.ini << EOF
+cat > ../ansible/inventory.ini << EOF
 [web]
 $WEB_IP
 
@@ -23,4 +23,4 @@ $BASTION_IP
 $DB_ENDPOINT
 EOF
 
-cat inventory.ini
+cat ../ansible/inventory.ini
