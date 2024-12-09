@@ -62,7 +62,7 @@ jobs:
       - name: Generate Inventory
         working-directory: ./terraform
         run: |
-          if [ ! -f scripts/generate_inventory.sh ]; then
+          if [ ! -f ./scripts/generate_inventory.sh ]; then
             echo "Error: generate_inventory.sh not found"
             exit 1
           fi
