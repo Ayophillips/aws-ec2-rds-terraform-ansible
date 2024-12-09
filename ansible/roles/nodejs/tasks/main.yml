@@ -22,7 +22,7 @@
     name: pm2
     global: yes
     state: present
----
+
 - name: Create app directory
   file:
     path: /var/www/nodeapp
