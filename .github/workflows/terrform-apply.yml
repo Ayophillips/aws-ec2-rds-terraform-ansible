@@ -36,7 +36,7 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -var="db_password=$TF_VAR_DB_PASSWORD"
         
       - name: Terraform Apply
         run: terraform apply -auto-approve -var="db_password=$TF_VAR_DB_PASSWORD"
