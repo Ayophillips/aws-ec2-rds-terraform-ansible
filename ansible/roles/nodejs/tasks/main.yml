@@ -1,5 +1,10 @@
-# ansible/roles/nodejs/tasks/main.yml
----
+- name: Ensure app user exists
+  user:
+    name: nodeapp
+    system: yes
+    create_home: yes
+    shell: /bin/bash
+
 - name: Add NodeSource repository
   shell: |
     curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -12,13 +17,80 @@
     state: present
     update_cache: yes
 
-- name: Install npm
-  apt:
-    name: npm
-    state: present
-
 - name: Install PM2 globally
   npm:
     name: pm2
     global: yes
     state: present
+---
+- name: Create app directory
+  file:
+    path: /var/www/nodeapp
+    state: directory
+    owner: app
+    group: app
+    mode: "0755"
+
+- name: Copy application files
+  copy:
+    src: /path/to/your/backend/code/
+    dest: /var/www/nodeapp
+    owner: nodeapp
+    group: nodeapp
+
+- name: Install application dependencies
+  npm:
+    path: /var/www/nodeapp
+    production: yes
+
+- name: Create app directory
+  file:
+    path: /var/www/nodeapp
+    state: directory
+    owner: nodeapp
+    group: nodeapp
+    mode: "0755"
+
+- name: Copy application files
+  copy:
+    src: ../../../backend
+    dest: /var/www/nodeapp
+    owner: nodeapp
+    group: nodeapp
+
+- name: Install application dependencies
+  npm:
+    path: /var/www/nodeapp
+    state: present
+    production: yes
+  become: true
+  become_user: nodeapp
+
+- name: Deploy systemd service file
+  template:
+    src: nodeapp.service.j2
+    dest: /etc/systemd/system/nodeapp.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start Node.js app
+  systemd:
+    name: nodeapp
+    state: started
+    enabled: yes
+
+- name: Verify Node.js app is running
+  uri:
+    url: "http://localhost:{{ node_app_port }}/health"
+    return_content: yes
+  register: health_check
+  until: health_check.status == 200
+  retries: 6
+  delay: 10
+  failed_when: health_check.status != 200
+  changed_when: false

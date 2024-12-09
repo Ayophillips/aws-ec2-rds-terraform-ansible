@@ -1,10 +1,25 @@
-# ansible/roles/database_setup/tasks/main.yml
 - name: Create database schema
   postgresql_db:
     name: "{{ db_name }}"
     state: present
+    login_host: "{{ db_host }}"
+    login_user: "{{ db_user }}"
+    login_password: "{{ db_password }}"
 
 - name: Create database tables
   postgresql_query:
     db: "{{ db_name }}"
-    path: "/path/to/schema.sql"
+    login_host: "{{ db_host }}"
+    login_user: "{{ db_user }}"
+    login_password: "{{ db_password }}"
+    path: "files/schema.sql"
+
+- name: Create application user
+  postgresql_user:
+    name: "{{ app_db_user }}"
+    password: "{{ app_db_password }}"
+    db: "{{ db_name }}"
+    priv: "ALL"
+    login_host: "{{ db_host }}"
+    login_user: "{{ db_user }}"
+    login_password: "{{ db_password }}"

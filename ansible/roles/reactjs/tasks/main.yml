@@ -1,0 +1,56 @@
+- name: Add NodeSource repository
+  shell: curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+  args:
+    executable: /bin/bash
+
+- name: Install Node.js and npm
+  apt:
+    name: nodejs
+    state: present
+
+- name: Create app directory
+  file:
+    path: /var/www/reactapp
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
+- name: Copy React app source code
+  copy:
+    src: ../../../frontend
+    dest: /var/www/reactapp
+    owner: www-data
+    group: www-data
+
+- name: Install dependencies and build React app
+  command: npm install && npm run build
+  args:
+    chdir: /var/www/reactapp
+  register: build_result
+  failed_when: build_result.rc != 0
+  become: true
+  become_user: www-data
+
+- name: Ensure NGINX html directory exists
+  file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
+- name: Move build files to NGINX directory
+  shell: "cp -r /var/www/reactapp/build/* /var/www/html/"
+  become: true
+  args:
+    creates: /var/www/html/index.html
+
+- name: Ensure proper ownership and permissions of NGINX files
+  file:
+    path: /var/www/html
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+    recurse: yes

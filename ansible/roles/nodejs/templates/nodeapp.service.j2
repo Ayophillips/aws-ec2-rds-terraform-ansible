@@ -1,0 +1,19 @@
+[Unit]
+Description=Node.js Application
+After=network.target
+
+[Service]
+Environment=PORT=3000
+Type=simple
+User=nodeapp
+WorkingDirectory=/var/www/nodeapp
+ExecStart=/usr/bin/pm2 start /var/www/nodeapp/server.js --name nodeapp --no-daemon --output /var/log/nodeapp/output.log --error /var/log/nodeapp/error.log
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodeapp
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
