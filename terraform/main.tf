@@ -56,7 +56,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.public[*].id
+  subnet_id     = aws_subnet.public[0].id
 
   tags = {
     Name = "main-nat"
@@ -245,7 +245,7 @@ module "web" {
   instance_type      = "t2.micro"
   key_name           = "my-key-pair"
   security_group_ids = [aws_security_group.public.id]
-  subnet_id          = aws_subnet.public[*].id
+  subnet_id          = aws_subnet.public[0].id
 }
 
 module "backend" {
@@ -255,7 +255,7 @@ module "backend" {
   instance_type      = "t2.micro"
   key_name           = "my-key-pair"
   security_group_ids = [aws_security_group.private.id]
-  subnet_id          = aws_subnet.private[*].id
+  subnet_id          = aws_subnet.private[0].id
 }
 
 module "bastion" {
@@ -264,8 +264,8 @@ module "bastion" {
   ami                = var.ami
   instance_type      = "t2.micro"
   key_name           = "my-key-pair"
-  security_group_ids = [aws_security_group.private.id]
-  subnet_id          = aws_subnet.public[*].id
+  security_group_ids = [aws_security_group.bastion.id]
+  subnet_id          = aws_subnet.public[1].id
 }
 
 # Application Load Balancer
