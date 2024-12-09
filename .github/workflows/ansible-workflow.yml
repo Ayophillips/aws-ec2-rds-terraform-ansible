@@ -28,6 +28,17 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform Init and Output
+        working-directory: ./terraform
+        run: |
+          terraform init
+          terraform output -json > tf_outputs.json
+
       - name: Generate Inventory
         working-directory: ./terraform
         run: |
@@ -47,10 +58,10 @@ jobs:
       - name: Run Ansible Playbook
         working-directory: ./ansible
         run: |
-          ansible-playbook ansible/playbook.yml \
+          ansible-playbook playbook.yml \
             --vault-password-file .vault_pass \
             -e "db_password=$TF_VAR_DB_PASSWORD" \
-            -e "db_host=$(terraform output -raw db_endpoint)" \
+            -e "db_host=$((cat ../terraform/tf_outputs.json | jq -r '.instances.value.database')" \
             -e "db_user=dbadmin" \
             -e "db_name=appdb" \
             -e "db_port=5432"
@@ -60,3 +71,4 @@ jobs:
         run: |
           rm -f ~/.ssh/id_rsa*
           rm -f .vault_pass
+          rm -f terraform/tf_outputs.json
