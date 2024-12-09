@@ -18,6 +18,10 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 # Public Subnets
 resource "aws_subnet" "public" {
   count                   = length(var.public_subnet_cidrs)
@@ -45,7 +49,9 @@ resource "aws_subnet" "private" {
 
 # NAT Gateway
 resource "aws_eip" "nat" {
-  domain = "vpc"
+  tags = {
+    Name = "nat-eip"
+  }
 }
 
 resource "aws_nat_gateway" "main" {
@@ -258,7 +264,7 @@ module "bastion" {
   ami                = var.ami
   instance_type      = "t2.micro"
   key_name           = "my-key-pair"
-  security_group_ids = [aws_security_group.private.id]
+  security_group_ids = [aws_security_group.bastion.id]
   subnet_id          = aws_subnet.public[1].id
 }
 
@@ -268,7 +274,7 @@ resource "aws_lb" "app" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = aws_subnet.public[0].id
+  subnets            = aws_subnet.public[*].id
 }
 
 resource "aws_lb_target_group" "app" {
@@ -304,7 +310,7 @@ resource "aws_lb_target_group_attachment" "app" {
 # RDS Instance
 resource "aws_db_subnet_group" "main" {
   name       = "main-db-subnet-group"
-  subnet_ids = aws_subnet.private[1].id
+  subnet_ids = aws_subnet.private[*].id
 }
 
 resource "aws_db_instance" "main" {

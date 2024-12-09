@@ -1,0 +1,2 @@
+node_app_port: 3000
+app_environment: production

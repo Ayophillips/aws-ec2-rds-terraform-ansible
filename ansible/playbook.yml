@@ -3,7 +3,7 @@
   become: true
   roles:
     - nginx
-    - app_deploy
+    - reacjs
 
 - name: Setup DB
   hosts: database
@@ -13,7 +13,12 @@
 
 - name: Deploy Backend
   hosts: backend
+  vars:
+    db_host: "your-db-host"
+    db_user: "your-db-user"
+    db_password: "{{ vault_db_password }}" # Use Ansible vault for sensitive data
+    db_name: "your-db-name"
+    db_port: "your-db-port"
   become: true
   roles:
     - nodejs
-    - app_deploy
