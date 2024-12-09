@@ -22,5 +22,3 @@ $BASTION_IP
 [database]
 $DB_ENDPOINT
 EOF
-
-cat ../ansible/inventory.ini
