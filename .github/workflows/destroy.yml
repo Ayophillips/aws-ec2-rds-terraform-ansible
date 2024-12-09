@@ -23,4 +23,4 @@ jobs:
 
       - name: Terraform Destroy
         working-directory: ./terraform
-        run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -var="db_password=$TF_VAR_DB_PASSWORD"
