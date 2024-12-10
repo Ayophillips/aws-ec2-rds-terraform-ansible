@@ -15,17 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Install Ansible
         run: |
           sudo apt update
           sudo apt install -y ansible
           ansible --version
-
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -70,6 +69,5 @@ jobs:
       - name: Cleanup Sensitive Files
         if: always()
         run: |
-          rm -f ~/.ssh/id_rsa*
           rm -f .vault_pass
           rm -f terraform/tf_outputs.json
