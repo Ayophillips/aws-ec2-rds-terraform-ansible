@@ -14,7 +14,7 @@ cat > ../ansible/inventory.ini << EOF
 $WEB_IP
 
 [backend]
-$BACKEND_IP
+$BACKEND_IP ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p ec2-user@$BASTION_IP"'
 
 [bastion]
 $BASTION_IP
