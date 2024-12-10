@@ -58,7 +58,7 @@ jobs:
         working-directory: ./ansible
         run: |
           DB_HOST=$(cat ../terraform/tf_outputs.json | jq -r '.instances.value.database')
-          ansible-playbook playbook.yml \
+          ansible-playbook -vvvv playbook.yml \
             --vault-password-file .vault_pass \
             -e "db_password=$TF_VAR_DB_PASSWORD" \
             -e "db_host=${DB_HOST}" \
